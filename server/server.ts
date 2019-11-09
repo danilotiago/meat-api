@@ -1,11 +1,12 @@
 import { environment } from './../common/environment';
 import * as restify from 'restify';
+import { Router } from '../common/router';
 
 export class Server {
 
     application: restify.Server;
 
-    initRoutes(): Promise<any> {
+    initRoutes(routers: Router[]): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
                 this.application = restify.createServer({
@@ -13,13 +14,8 @@ export class Server {
                     version: '1.0.0'
                 });
 
-                
-                this.application.get('/hello', (req, resp, next) => {
-                    resp.json({
-                        message: 'hello !!'
-                    });
-                    return next();
-                });
+                // loop para inicializar as rotas
+                routers.forEach(route => route.applyRoutes(this.application));
 
                 this.application.use(restify.plugins.queryParser());
 
@@ -33,8 +29,8 @@ export class Server {
         });
     }
 
-    bootstrap(): Promise<Server> {
-        return this.initRoutes()
+    bootstrap(routers: Router[] = []): Promise<Server> {
+        return this.initRoutes(routers)
             .then(() => this);
     }
 }
