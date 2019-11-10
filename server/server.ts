@@ -1,3 +1,4 @@
+import { mergePatchBodyParser } from './../dist/server/merge-path.parser';
 import { environment } from './../common/environment';
 import * as restify from 'restify';
 import { Router } from '../common/router';
@@ -29,6 +30,8 @@ export class Server {
                 this.application.use(restify.plugins.queryParser());
                 // parse do Body da requisicao
                 this.application.use(restify.plugins.bodyParser());
+                // parse do Body da requisicao via merge-patch+json
+                this.application.use(mergePatchBodyParser);
 
                 this.application.listen(environment.server.port, () => {
                     resolve(this.application);

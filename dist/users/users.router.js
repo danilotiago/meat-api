@@ -50,6 +50,26 @@ class UsersRouter extends router_1.Router {
                 return next();
             });
         });
+        /**
+         * faz um overwrite parcial, os campos que
+         * nao forem passados serao mantidos:
+         * findByIdAndUpdate()
+         */
+        application.patch('/users/:id', (req, resp, next) => {
+            user_model_1.User.findByIdAndUpdate(req.params.id, req.body, {
+                new: true // obtem o novo documento e nao o antigo
+            })
+                .then(user => {
+                if (user) {
+                    resp.json(user);
+                    return next();
+                }
+                else {
+                    resp.send(404);
+                    return next();
+                }
+            });
+        });
     }
 }
 exports.usersRouter = new UsersRouter();

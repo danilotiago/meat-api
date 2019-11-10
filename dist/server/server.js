@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const merge_path_parser_1 = require("./../dist/server/merge-path.parser");
 const environment_1 = require("./../common/environment");
 const restify = require("restify");
 const mongoose = require("mongoose");
@@ -23,6 +24,8 @@ class Server {
                 this.application.use(restify.plugins.queryParser());
                 // parse do Body da requisicao
                 this.application.use(restify.plugins.bodyParser());
+                // parse do Body da requisicao via merge-patch+json
+                this.application.use(merge_path_parser_1.mergePatchBodyParser);
                 this.application.listen(environment_1.environment.server.port, () => {
                     resolve(this.application);
                 });
