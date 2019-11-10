@@ -25,7 +25,10 @@ export class Server {
                 // loop para inicializar as rotas
                 routers.forEach(route => route.applyRoutes(this.application));
 
+                // parse dos queryParams
                 this.application.use(restify.plugins.queryParser());
+                // parse do Body da requisicao
+                this.application.use(restify.plugins.bodyParser());
 
                 this.application.listen(environment.server.port, () => {
                     resolve(this.application);
