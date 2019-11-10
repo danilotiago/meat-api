@@ -1,4 +1,4 @@
-import { User } from './../dist/users/user.model';
+import { User } from './user.model';
 import { Router } from "../common/router";
 import * as restify from 'restify';
 import { NotFoundError } from 'restify-errors';

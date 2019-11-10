@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_model_1 = require("./../dist/users/user.model");
+const user_model_1 = require("./user.model");
 const router_1 = require("../common/router");
 const restify_errors_1 = require("restify-errors");
 class UsersRouter extends router_1.Router {
