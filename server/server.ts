@@ -1,11 +1,19 @@
 import { environment } from './../common/environment';
 import * as restify from 'restify';
 import { Router } from '../common/router';
+import * as mongoose from 'mongoose';
 
 export class Server {
 
     application: restify.Server;
 
+    initDb(): Promise<mongoose.Mongoose> {
+        return mongoose.connect(environment.db.url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+    }
+    
     initRoutes(routers: Router[]): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
@@ -30,7 +38,9 @@ export class Server {
     }
 
     bootstrap(routers: Router[] = []): Promise<Server> {
-        return this.initRoutes(routers)
-            .then(() => this);
+        // se o banco subir OK, sobe as rotas
+        return this.initDb().then(() =>
+            this.initRoutes(routers).then(() => this)
+        );
     }
 }

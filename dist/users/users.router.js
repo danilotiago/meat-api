@@ -5,7 +5,7 @@ const router_1 = require("../common/router");
 class UsersRouter extends router_1.Router {
     applyRoutes(application) {
         application.get('/users', (req, resp, next) => {
-            user_model_1.User.all()
+            user_model_1.User.find()
                 .then(users => {
                 resp.json(users);
                 return next();

@@ -2,7 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const environment_1 = require("./../common/environment");
 const restify = require("restify");
+const mongoose = require("mongoose");
 class Server {
+    initDb() {
+        return mongoose.connect(environment_1.environment.db.url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+    }
     initRoutes(routers) {
         return new Promise((resolve, reject) => {
             try {
@@ -23,8 +30,8 @@ class Server {
         });
     }
     bootstrap(routers = []) {
-        return this.initRoutes(routers)
-            .then(() => this);
+        // se o banco subir OK, sobe as rotas
+        return this.initDb().then(() => this.initRoutes(routers).then(() => this));
     }
 }
 exports.Server = Server;
