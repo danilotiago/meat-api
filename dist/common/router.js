@@ -1,5 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Router {
+const events_1 = require("events");
+class Router extends events_1.EventEmitter {
+    render(resp, next) {
+        /**
+         * retorna uma arrow function que valida a resposta
+         * que sera enviada pelo send
+         */
+        return document => {
+            if (document) {
+                /**
+                 * emite um evento para poder manipular
+                 * o document antes de ele ser enviado
+                 * na resposta
+                 */
+                this.emit('beforeRender', document);
+                resp.send(document);
+            }
+            else {
+                resp.send(404);
+            }
+            return next();
+        };
+    }
 }
 exports.Router = Router;

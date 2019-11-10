@@ -3,32 +3,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = require("./../dist/users/user.model");
 const router_1 = require("../common/router");
 class UsersRouter extends router_1.Router {
+    constructor() {
+        super();
+        /**
+         * ao receber a notificacao do evento beforeRender
+         * remove a senha do document para ser enviado
+         * via resposta
+         */
+        this.on('beforeRender', document => {
+            document.password = undefined;
+        });
+    }
     applyRoutes(application) {
         application.get('/users', (req, resp, next) => {
-            user_model_1.User.find()
-                .then(users => {
-                resp.json(users);
-                return next();
-            });
+            user_model_1.User.find().then(this.render(resp, next));
         });
         application.get('/users/:id', (req, resp, next) => {
             user_model_1.User.findById(req.params.id)
-                .then(user => {
-                if (user) {
-                    resp.json(user);
-                    return next();
-                }
-                resp.send(404);
-                return next();
-            });
+                .then(this.render(resp, next));
         });
         application.post('/users', (req, resp, next) => {
             let user = new user_model_1.User(req.body);
-            user.save().then(user => {
-                user.password = undefined;
-                resp.json(user);
-                return next();
-            });
+            user.save().then(this.render(resp, next));
         });
         /**
          * faz um overwrite completo, tirando os atributos
@@ -45,10 +41,7 @@ class UsersRouter extends router_1.Router {
                 else {
                     resp.send(404);
                 }
-            }).then(user => {
-                resp.json(user);
-                return next();
-            });
+            }).then(this.render(resp, next));
         });
         /**
          * faz um overwrite parcial, os campos que
@@ -59,16 +52,7 @@ class UsersRouter extends router_1.Router {
             user_model_1.User.findByIdAndUpdate(req.params.id, req.body, {
                 new: true // obtem o novo documento e nao o antigo
             })
-                .then(user => {
-                if (user) {
-                    resp.json(user);
-                    return next();
-                }
-                else {
-                    resp.send(404);
-                    return next();
-                }
-            });
+                .then(this.render(resp, next));
         });
         application.del('/users/:id', (req, resp, next) => {
             user_model_1.User.deleteOne({ _id: req.params.id }).exec()
