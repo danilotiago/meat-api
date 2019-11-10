@@ -35,6 +35,26 @@ class UsersRouter extends Router {
                 return next();
             });
         });
+
+        /**
+         * faz um overwrite completo, tirando os atributos
+         * que nao foram passados: overwrite: true
+         */
+        application.put('/users/:id', (req, resp, next) => {
+            User.update({_id: req.params.id}, req.body, {
+                overwrite: true // substitui todo documento
+            }).exec().then(result => {
+                // n => numero de linhas que foram alteradas
+                if (result.n) {
+                    return User.findById(req.params.id);
+                } else {
+                    resp.send(404);
+                }
+            }).then(user => {
+                resp.json(user);
+                return next();
+            });
+        });
     }
 }
 
