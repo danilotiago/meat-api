@@ -1,8 +1,9 @@
-import { mergePatchBodyParser } from './../dist/server/merge-path.parser';
+import { handleError } from './error-handler';
+import { mergePatchBodyParser } from './merge-path.parser';
 import { environment } from './../common/environment';
 import * as restify from 'restify';
 import { Router } from '../common/router';
-import * as mongoose from 'mongoose';
+import * as mongoose from 'mongoose';   
 
 export class Server {
 
@@ -36,6 +37,8 @@ export class Server {
                 this.application.listen(environment.server.port, () => {
                     resolve(this.application);
                 });
+
+                this.application.on('restifyError', handleError);
 
             } catch (err) {
                 reject(err);

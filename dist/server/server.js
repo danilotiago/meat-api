@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const merge_path_parser_1 = require("./../dist/server/merge-path.parser");
+const error_handler_1 = require("./error-handler");
+const merge_path_parser_1 = require("./merge-path.parser");
 const environment_1 = require("./../common/environment");
 const restify = require("restify");
 const mongoose = require("mongoose");
@@ -29,6 +30,7 @@ class Server {
                 this.application.listen(environment_1.environment.server.port, () => {
                     resolve(this.application);
                 });
+                this.application.on('restifyError', error_handler_1.handleError);
             }
             catch (err) {
                 reject(err);
