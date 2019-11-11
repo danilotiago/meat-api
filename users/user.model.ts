@@ -1,5 +1,7 @@
+import { environment } from './../common/environment';
 import { validateCPF } from './../common/validators/validate-cpf.validator';
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 export interface User extends mongoose.Document {
     name: string,
@@ -39,6 +41,27 @@ const userSchema = new mongoose.Schema({
             msg: 'Invalid CPF ({VALUE})'
         }
     }
+});
+
+/**
+ * 
+ * evento acionado apos a chamade do save pelo mongoose (save ou create)
+ * function => definicao obrigatoria para o mongoose definir o contexto
+ * do documento ou query corretamente ao uso do "this"
+ * 
+ */
+userSchema.pre('save', function (next) {
+    const user: any = this;
+
+    // se a senha nao foi modificada, nao faz nada
+    if (! user.isModified('password')) {
+        return next();
+    }
+
+    bcrypt.hash(user.password, environment.security.saltRounds).then(hash => {
+        user.password = hash;
+        return next();
+    }).catch(next);
 });
 
 // quando User, ja define que a collection sera users
