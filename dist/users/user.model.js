@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const validate_cpf_validator_1 = require("./../common/validators/validate-cpf.validator");
 const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
     name: {
@@ -21,8 +22,16 @@ const userSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        required: true,
+        required: false,
         enum: ['Male', 'Female']
+    },
+    cpf: {
+        type: String,
+        required: false,
+        validate: {
+            validator: validate_cpf_validator_1.validateCPF,
+            msg: 'Invalid CPF ({VALUE})'
+        }
     }
 });
 // quando User, ja define que a collection sera users
