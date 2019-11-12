@@ -38,7 +38,8 @@ class UsersRouter extends router_1.Router {
          */
         application.put('/users/:id', (req, resp, next) => {
             user_model_1.User.update({ _id: req.params.id }, req.body, {
-                overwrite: true // substitui todo documento
+                overwrite: true,
+                runValidators: true // executa as validacoes tambem no metodo update()
             }).exec().then(result => {
                 // n => numero de linhas que foram alteradas
                 if (result.n) {
@@ -57,7 +58,8 @@ class UsersRouter extends router_1.Router {
          */
         application.patch('/users/:id', (req, resp, next) => {
             user_model_1.User.findByIdAndUpdate(req.params.id, req.body, {
-                new: true // obtem o novo documento e nao o antigo
+                new: true,
+                runValidators: true // executa as validacoes tambem no metodo update()
             })
                 .then(this.render(resp, next))
                 .catch(next);
