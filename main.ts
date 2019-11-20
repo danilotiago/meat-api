@@ -1,3 +1,4 @@
+import { reviewsRouter } from './domain/reviews/reviews.router';
 import { restaurantsRouter } from './domain/restaurants/restaurants.router';
 import { Server } from './server/server';
 import { usersRouter } from './domain/users/users.router';
@@ -6,7 +7,8 @@ const server = new Server();
 
 server.bootstrap([
         usersRouter, 
-        restaurantsRouter
+        restaurantsRouter,
+        reviewsRouter
     ])
     .then(server => {
         console.log(`API is running on: `, server.application.address());

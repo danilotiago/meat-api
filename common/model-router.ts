@@ -8,6 +8,17 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
         super();
     }
 
+    /**
+     * estrategia para manipular a query nas classes filhas antes
+     * de se inscrever, assim podemos customizar uma query antes
+     * da inscricao
+     * 
+     * @param query 
+     */
+    protected prepareQueryAll(query: mongoose.DocumentQuery<D[],D>): mongoose.DocumentQuery<D[],D> {
+        return query;
+    }
+
     validateId = (req, resp, next) => {
         if (! mongoose.Types.ObjectId.isValid(req.params.id)) {
             next(new NotFoundError(`Objeto não encontrado com o ID ${req.params.id}`));
@@ -17,7 +28,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     }
 
     findAll = (req, resp, next) => {
-        this.model.find()
+        this.prepareQueryAll(this.model.find())   
             .then(this.renderAll(resp, next))
             .catch(next);
     }

@@ -16,7 +16,7 @@ class ModelRouter extends router_1.Router {
             }
         };
         this.findAll = (req, resp, next) => {
-            this.model.find()
+            this.prepareQueryAll(this.model.find())
                 .then(this.renderAll(resp, next))
                 .catch(next);
         };
@@ -77,6 +77,16 @@ class ModelRouter extends router_1.Router {
             })
                 .catch(next);
         };
+    }
+    /**
+     * estrategia para manipular a query nas classes filhas antes
+     * de se inscrever, assim podemos customizar uma query antes
+     * da inscricao
+     *
+     * @param query
+     */
+    prepareQueryAll(query) {
+        return query;
     }
 }
 exports.ModelRouter = ModelRouter;
