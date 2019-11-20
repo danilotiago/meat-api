@@ -1,6 +1,6 @@
-import { restaurantsRouter } from './restaurants/restaurants.router';
+import { restaurantsRouter } from './domain/restaurants/restaurants.router';
 import { Server } from './server/server';
-import { usersRouter } from './users/users.router';
+import { usersRouter } from './domain/users/users.router';
 
 const server = new Server();
 

@@ -1,35 +1,20 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var user_model_1 = require("./user.model");
-var model_router_1 = require("../common/model-router");
-var UsersRouter = /** @class */ (function (_super) {
-    __extends(UsersRouter, _super);
-    function UsersRouter() {
-        var _this = _super.call(this, user_model_1.User) || this;
+const user_model_1 = require("./user.model");
+const model_router_1 = require("../../common/model-router");
+class UsersRouter extends model_router_1.ModelRouter {
+    constructor() {
+        super(user_model_1.User);
         /**
          * ao receber a notificacao do evento beforeRender
          * remove a senha do document para ser enviado
          * via resposta
          */
-        _this.on('beforeRender', function (document) {
+        this.on('beforeRender', document => {
             document.password = undefined;
         });
-        return _this;
     }
-    UsersRouter.prototype.applyRoutes = function (application) {
+    applyRoutes(application) {
         application.get('/users', this.findAll);
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
@@ -53,7 +38,6 @@ var UsersRouter = /** @class */ (function (_super) {
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
         application.del('/users/:id', [this.validateId, this.delete]);
-    };
-    return UsersRouter;
-}(model_router_1.ModelRouter));
+    }
+}
 exports.usersRouter = new UsersRouter();

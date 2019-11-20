@@ -1,17 +1,10 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var environment_1 = require("./../common/environment");
-var validate_cpf_validator_1 = require("./../common/validators/validate-cpf.validator");
-var mongoose = __importStar(require("mongoose"));
-var bcrypt = __importStar(require("bcrypt"));
-var userSchema = new mongoose.Schema({
+const environment_1 = require("../../common/environment");
+const validate_cpf_validator_1 = require("../../common/validators/validate-cpf.validator");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -50,14 +43,14 @@ var userSchema = new mongoose.Schema({
  * @param obj
  * @param next
  */
-var hashPassword = function (obj, next) {
-    bcrypt.hash(obj.password, environment_1.environment.security.saltRounds).then(function (hash) {
+const hashPassword = (obj, next) => {
+    bcrypt.hash(obj.password, environment_1.environment.security.saltRounds).then(hash => {
         obj.password = hash;
         return next();
     }).catch(next);
 };
-var saveMiddleware = function (next) {
-    var user = this;
+const saveMiddleware = function (next) {
+    const user = this;
     /**
      * como aqui o contexto this é o Document, logo, devemos verificar
      * se o password foi modificado para este Documento, se nao,
@@ -68,7 +61,7 @@ var saveMiddleware = function (next) {
     }
     hashPassword(user, next);
 };
-var updateMiddleware = function (next) {
+const updateMiddleware = function (next) {
     /**
      * como aqui o contexto this é a query, logo, devemos verificar
      * se o password esta no payload daquela query, se nao tiver,

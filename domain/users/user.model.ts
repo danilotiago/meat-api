@@ -1,5 +1,5 @@
-import { environment } from './../common/environment';
-import { validateCPF } from './../common/validators/validate-cpf.validator';
+import { environment } from '../../common/environment';
+import { validateCPF } from '../../common/validators/validate-cpf.validator';
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
