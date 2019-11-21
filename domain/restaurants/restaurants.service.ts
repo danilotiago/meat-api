@@ -34,4 +34,19 @@ export class RestaurantsService {
                 return next();
             }).catch(next);
     }
+
+    finbByName = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
+        
+        if (! req.query.name) {
+            return next();
+        }
+
+        Restaurant.find({name: req.query.name})
+            .then(restaurant => {
+                if (! restaurant) {
+                    throw new NotFoundError(`Restaurante de nome ${req.query.name} não encontrado`);
+                }
+                resp.json(restaurant);
+            }).catch(next);
+    }
 }

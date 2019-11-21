@@ -32,6 +32,18 @@ class RestaurantsService {
                 return next();
             }).catch(next);
         };
+        this.finbByName = (req, resp, next) => {
+            if (!req.query.name) {
+                return next();
+            }
+            restaurant_model_1.Restaurant.find({ name: req.query.name })
+                .then(restaurant => {
+                if (!restaurant) {
+                    throw new restify_errors_1.NotFoundError(`Restaurante de nome ${req.query.name} não encontrado`);
+                }
+                resp.json(restaurant);
+            }).catch(next);
+        };
     }
 }
 exports.RestaurantsService = RestaurantsService;

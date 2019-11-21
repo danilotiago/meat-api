@@ -14,8 +14,33 @@ class RestaurantsRouter extends ModelRouter<Restaurant> {
     }
     
     applyRoutes(application: restify.Server) {
-        
-        application.get('/restaurants', this.findAll);
+
+        /**
+         * Exemplo com versao de endpoint:
+         * 
+         * configurando a rota pelo objeto ao inves apenas da string '/restaurants',
+         * com isso podemos passar a versao do endpoint que por default, eh a mais
+         * atual
+         * 
+         * podemos definir a versao exata passando no header:
+         * accept-version: 2.0.0 
+         * 
+         * podemos passar uma versao mais atualizada de alguma versao:
+         * accept-version: ~2
+         * ou seja, sera usada a versao mais atualizada da versao 2
+         * 
+         * podemos passar uma versao a partir de:
+         * accept-version: >1
+         * ou seja, sera buscado uma versao da 2 pra cima
+         * 
+         * caso a versao passada nao exista, o restify dara erro
+         * 
+         */
+    
+        application.get('/restaurants', restify.plugins.conditionalHandler([
+            {version: '2.0.0', handler: [this.restaurantService.finbByName, this.findAll]},
+            {version: '1.0.0', handler: this.findAll}
+        ]));
 
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
