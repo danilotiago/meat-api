@@ -2,9 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = require("./user.model");
 const model_router_1 = require("../../common/model-router");
+const restify = require("restify");
 class UsersRouter extends model_router_1.ModelRouter {
     constructor() {
         super(user_model_1.User);
+        this.findByEmail = (req, resp, next) => {
+            if (!req.query.email) {
+                return next();
+            }
+            user_model_1.User.findByEmail(req.query.email)
+                .then(user => user ? [user] : [])
+                .then(this.renderAll(resp, next))
+                .catch(next);
+        };
         /**
          * ao receber a notificacao do evento beforeRender
          * remove a senha do document para ser enviado
@@ -15,7 +25,10 @@ class UsersRouter extends model_router_1.ModelRouter {
         });
     }
     applyRoutes(application) {
-        application.get('/users', this.findAll);
+        application.get('/users', restify.plugins.conditionalHandler([
+            { version: '2.0.0', handler: [this.findByEmail, this.findAll] },
+            { version: '1.0.0', handler: [this.findAll] }
+        ]));
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */

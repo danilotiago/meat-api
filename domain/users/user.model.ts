@@ -1,3 +1,4 @@
+import { UserModel } from './user.model';
 import { environment } from '../../common/environment';
 import { validateCPF } from '../../common/validators/validate-cpf.validator';
 import * as mongoose from 'mongoose';
@@ -7,6 +8,10 @@ export interface User extends mongoose.Document {
     name: string,
     email: string,
     password: string
+}
+
+export interface UserModel extends mongoose.Model<User> {
+    findByEmail(email: string): Promise<User>;
 }
 
 const userSchema = new mongoose.Schema({
@@ -42,6 +47,10 @@ const userSchema = new mongoose.Schema({
         }
     }
 });
+
+userSchema.statics.findByEmail = function (email: string) {
+    return this.findOne({email: email});
+}
 
 /**
  * 
@@ -116,4 +125,4 @@ userSchema.pre('findOneAndUpdate', updateMiddleware);
 userSchema.pre('update', updateMiddleware);
 
 // quando User, ja define que a collection sera users
-export const User = mongoose.model<User>('User', userSchema);
+export const User = mongoose.model<User, UserModel>('User', userSchema);

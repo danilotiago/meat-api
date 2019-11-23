@@ -17,10 +17,24 @@ class UsersRouter extends ModelRouter<User> {
             document.password = undefined;
         });
     }
+
+    findByEmail = (req, resp, next) => {
+        if (! req.query.email) {
+            return next();
+        }
+
+        User.findByEmail(req.query.email)
+            .then(user => user ? [user] : [])
+            .then(this.renderAll(resp, next))
+            .catch(next);
+    }
     
     applyRoutes(application: restify.Server) {
         
-        application.get('/users', this.findAll);
+        application.get('/users', restify.plugins.conditionalHandler([
+            {version: '2.0.0', handler: [this.findByEmail, this.findAll]},
+            {version: '1.0.0', handler: [this.findAll]}
+        ]));
 
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo

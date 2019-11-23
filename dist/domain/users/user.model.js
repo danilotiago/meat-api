@@ -36,6 +36,9 @@ const userSchema = new mongoose.Schema({
         }
     }
 });
+userSchema.statics.findByEmail = function (email) {
+    return this.findOne({ email: email });
+};
 /**
  *
  * funcao que gera o hash da senha e atribui a o obj passado
