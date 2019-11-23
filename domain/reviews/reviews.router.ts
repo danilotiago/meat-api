@@ -14,6 +14,13 @@ class ReviewsRouter extends ModelRouter<Review> {
         this.reviewsService = new ReviewsService();
     }
 
+    envelope(document: any) {
+        let resource = super.envelope(document);
+        const restId = document.restaurant._id || document.restaurant;
+        resource._links.self = `/restaurants/${restId}`;
+        return resource;
+    }
+
     /**
      * sobreposicao da estrategia de manipulacao da query antes da inscricao
      * vamos popular os atributos user e restaurant assim como:
@@ -29,19 +36,19 @@ class ReviewsRouter extends ModelRouter<Review> {
     
     applyRoutes(application: restify.Server) {
         
-        application.get('/reviews', this.findAll);
+        application.get(`${this.basePath}`, this.findAll);
 
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.get('/reviews/:id', [this.validateId, this.reviewsService.getByIdAndUserAndRestaurant]);
+        application.get(`${this.basePath}/:id`, [this.validateId, this.reviewsService.getByIdAndUserAndRestaurant]);
 
-        application.post('/reviews', this.save);
+        application.post(`${this.basePath}`, this.save);
 
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.del('/reviews/:id', [this.validateId, this.delete]);
+        application.del(`${this.basePath}/:id`, [this.validateId, this.delete]);
     }
 }
 

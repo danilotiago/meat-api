@@ -8,6 +8,12 @@ class ReviewsRouter extends model_router_1.ModelRouter {
         super(review_model_1.Review);
         this.reviewsService = new reviewsService_1.ReviewsService();
     }
+    envelope(document) {
+        let resource = super.envelope(document);
+        const restId = document.restaurant._id || document.restaurant;
+        resource._links.self = `/restaurants/${restId}`;
+        return resource;
+    }
     /**
      * sobreposicao da estrategia de manipulacao da query antes da inscricao
      * vamos popular os atributos user e restaurant assim como:
@@ -21,16 +27,16 @@ class ReviewsRouter extends model_router_1.ModelRouter {
             .populate('restaurant', 'name');
     }
     applyRoutes(application) {
-        application.get('/reviews', this.findAll);
+        application.get(`${this.basePath}`, this.findAll);
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.get('/reviews/:id', [this.validateId, this.reviewsService.getByIdAndUserAndRestaurant]);
-        application.post('/reviews', this.save);
+        application.get(`${this.basePath}/:id`, [this.validateId, this.reviewsService.getByIdAndUserAndRestaurant]);
+        application.post(`${this.basePath}`, this.save);
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.del('/reviews/:id', [this.validateId, this.delete]);
+        application.del(`${this.basePath}/:id`, [this.validateId, this.delete]);
     }
 }
 exports.reviewsRouter = new ReviewsRouter();

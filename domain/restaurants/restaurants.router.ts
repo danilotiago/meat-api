@@ -12,6 +12,12 @@ class RestaurantsRouter extends ModelRouter<Restaurant> {
         super(Restaurant);
         this.restaurantService = new RestaurantsService();
     }
+
+    envelope(document: any) {
+        let resource = super.envelope(document);
+        resource._links.menu = `${this.basePath}/${resource._id}/menu`;
+        return resource;
+    }
     
     applyRoutes(application: restify.Server) {
 
@@ -37,7 +43,7 @@ class RestaurantsRouter extends ModelRouter<Restaurant> {
          * 
          */
     
-        application.get('/restaurants', restify.plugins.conditionalHandler([
+        application.get(`${this.basePath}`, restify.plugins.conditionalHandler([
             {version: '2.0.0', handler: [this.restaurantService.finbByName, this.findAll]},
             {version: '1.0.0', handler: this.findAll}
         ]));
@@ -45,16 +51,16 @@ class RestaurantsRouter extends ModelRouter<Restaurant> {
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.get('/restaurants/:id', [this.validateId, this.findById]);
+        application.get(`${this.basePath}/:id`, [this.validateId, this.findById]);
 
-        application.post('/restaurants', this.save);
+        application.post(`${this.basePath}`, this.save);
 
         /**
          * substitui todo documento, se o campo nao existir, remove
          * 
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.put('/restaurants/:id', [this.validateId, this.replace]);
+        application.put(`${this.basePath}/:id`, [this.validateId, this.replace]);
 
         /**
          * faz o update parcial do documento, se o campo existir
@@ -62,17 +68,17 @@ class RestaurantsRouter extends ModelRouter<Restaurant> {
          * 
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.patch('/restaurants/:id', [this.validateId, this.update]);
+        application.patch(`${this.basePath}/:id`, [this.validateId, this.update]);
 
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.del('/restaurants/:id', [this.validateId, this.delete]);
+        application.del(`${this.basePath}/:id`, [this.validateId, this.delete]);
 
         /**
          * chama o metodo de retorno de restaurantes
          */
-        application.get('/restaurants/:id/menu', [
+        application.get(`${this.basePath}/:id/menu`, [
             this.validateId, 
             this.restaurantService.findMenu
         ]);
@@ -80,7 +86,7 @@ class RestaurantsRouter extends ModelRouter<Restaurant> {
         /**
          * chama o metodo de atualizar menu
          */
-        application.put('/restaurants/:id/menu', [
+        application.put(`${this.basePath}/:id/menu`, [
             this.validateId, 
             this.restaurantService.replaceMenu
         ]);
