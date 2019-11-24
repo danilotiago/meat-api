@@ -52,4 +52,15 @@ export class Server {
             this.initRoutes(routers).then(() => this)
         );
     }
+
+    /**
+     * desconecta do banco e encerra a aplicacao
+     * 
+     */
+    shutdown() {
+        return mongoose.disconnect()
+            .then(() => {
+                this.application.close()
+            })
+    }
 }

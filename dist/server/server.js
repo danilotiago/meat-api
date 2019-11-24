@@ -41,5 +41,15 @@ class Server {
         // se o banco subir OK, sobe as rotas
         return this.initDb().then(() => this.initRoutes(routers).then(() => this));
     }
+    /**
+     * desconecta do banco e encerra a aplicacao
+     *
+     */
+    shutdown() {
+        return mongoose.disconnect()
+            .then(() => {
+            this.application.close();
+        });
+    }
 }
 exports.Server = Server;
