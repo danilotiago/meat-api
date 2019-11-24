@@ -71,6 +71,53 @@ test('POST /users', () => {
         }).catch(fail)
 })
 
+test('GET /users/aaaa - not found', () => {
+    return request(address)
+        .get('/users/aaaa')
+        .then(resp => {
+            // verifica se o status foi 404
+            expect(resp.status).toBe(404)
+        }).catch(fail)
+})
+
+test('PATCH /users/:id', () => {
+    return request(address)
+        .post('/users')
+        .send({
+            name: 'Usuário de teste 2',
+            email: 'usuariodeteste2@email.com',
+            password: '123456'
+        })
+        .then(resp => {
+
+            return request(address)
+                .patch(`/users/${resp.body._id}`)
+                .send({
+                    name: 'ALTERADO Usuário de teste 2 ALTERADO',
+                    email: 'alterado_usuario2@email.com'
+                })
+                .then(resp => {
+
+                    // verifica se o status foi 200
+                    expect(resp.status).toBe(200)
+
+                    // verifica se foi retornado um id
+                    expect(resp.body._id).toBeDefined()
+
+                    // verifica se o name foi o name passado
+                    expect(resp.body.name).toBe('ALTERADO Usuário de teste 2 ALTERADO')
+
+                    // verifica se o email foi o email passado
+                    expect(resp.body.email).toBe('alterado_usuario2@email.com')
+
+                    // verifica se o password nao foi enviado
+                    expect(resp.body.password).toBeUndefined()
+                })
+
+        
+        }).catch(fail)
+})
+
 afterAll(() => {
     return server.shutdown()
 })
