@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const auth_handler_1 = require("./../../security/auth.handler");
 const user_model_1 = require("./user.model");
 const model_router_1 = require("../../common/model-router");
 const restify = require("restify");
@@ -53,6 +54,7 @@ class UsersRouter extends model_router_1.ModelRouter {
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
         application.del(`${this.basePath}/:id`, [this.validateId, this.delete]);
+        application.post(`${this.basePath}/authenticate`, auth_handler_1.authenticate);
     }
 }
 exports.usersRouter = new UsersRouter();

@@ -27,9 +27,11 @@
     ]
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^8.3.5",
     "bcrypt": "^3.0.6",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.9",
     "restify": "^8.4.0",
     "restify-errors": "8.0.1",
