@@ -27,7 +27,7 @@ class Router extends events_1.EventEmitter {
             else {
                 throw new restify_errors_1.NotFoundError(`Documento não encontrado`);
             }
-            return next();
+            return next(false);
         };
     }
     renderAll(resp, next, options = {}) {
@@ -42,7 +42,7 @@ class Router extends events_1.EventEmitter {
             else {
                 resp.json(this.envelopeAll([]));
             }
-            return next();
+            return next(false);
         };
     }
 }
