@@ -5,25 +5,7 @@ import { environment } from './../../common/environment';
 import 'jest'
 import * as request from 'supertest'
 
-/**
- * executa algumas configuracoes antes de 
- * rodar os teste
- * 
- * Aqui, estamos configurando o ambiente de testes
- * 
- */
-let server: Server
-let address: string
-beforeAll(() => {
-    environment.db.url = process.env.DB_URL || 'mongodb://localhost/meat-api-tests'
-    environment.server.port = process.env.SERVER_PORT || 3001
-    address = `http://localhost:${environment.server.port}`
-    server = new Server()
-
-    return server.bootstrap([usersRouter])
-        .then(() => User.remove({}).exec()) // limpa a collection de users antes de rodar tudo
-        .catch(console.error)
-})
+let address: string = (<any>global).address
 
 test('GET /users', () => {
     return request(address)
@@ -116,8 +98,4 @@ test('PATCH /users/:id', () => {
 
         
         }).catch(fail)
-})
-
-afterAll(() => {
-    return server.shutdown()
 })
