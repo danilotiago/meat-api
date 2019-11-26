@@ -1,3 +1,4 @@
+import { authorize } from './../../security/authz.handler';
 import { ReviewsService } from './reviewsService';
 import { Review } from './review.model';
 import { ModelRouter } from "../../common/model-router";
@@ -43,12 +44,12 @@ class ReviewsRouter extends ModelRouter<Review> {
          */
         application.get(`${this.basePath}/:id`, [this.validateId, this.reviewsService.getByIdAndUserAndRestaurant]);
 
-        application.post(`${this.basePath}`, this.save);
+        application.post(`${this.basePath}`, [authorize('user'), this.save]);
 
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.del(`${this.basePath}/:id`, [this.validateId, this.delete]);
+        application.del(`${this.basePath}/:id`, [authorize('user'), this.validateId, this.delete]);
     }
 }
 

@@ -1,3 +1,4 @@
+import { tokenParser } from './../security/token.parser';
 import { handleError } from './error-handler';
 import { mergePatchBodyParser } from './merge-path.parser';
 import { environment } from './../common/environment';
@@ -33,6 +34,9 @@ export class Server {
                 this.application.use(restify.plugins.bodyParser());
                 // parse do Body da requisicao via merge-patch+json
                 this.application.use(mergePatchBodyParser);
+
+                // middleware de autenticacao
+                this.application.use(tokenParser);
 
                 this.application.listen(environment.server.port, () => {
                     resolve(this.application);

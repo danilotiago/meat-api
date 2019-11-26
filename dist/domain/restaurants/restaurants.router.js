@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const authz_handler_1 = require("./../../security/authz.handler");
 const restaurants_service_1 = require("./restaurants.service");
 const restaurant_model_1 = require("./restaurant.model");
 const model_router_1 = require("../../common/model-router");
@@ -37,31 +38,31 @@ class RestaurantsRouter extends model_router_1.ModelRouter {
          *
          */
         application.get(`${this.basePath}`, restify.plugins.conditionalHandler([
-            { version: '2.0.0', handler: [this.restaurantService.finbByName, this.findAll] },
+            { version: '2.0.0', handler: [authz_handler_1.authorize('user'), this.restaurantService.finbByName, this.findAll] },
             { version: '1.0.0', handler: this.findAll }
         ]));
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
         application.get(`${this.basePath}/:id`, [this.validateId, this.findById]);
-        application.post(`${this.basePath}`, this.save);
+        application.post(`${this.basePath}`, [authz_handler_1.authorize('user'), this.save]);
         /**
          * substitui todo documento, se o campo nao existir, remove
          *
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.put(`${this.basePath}/:id`, [this.validateId, this.replace]);
+        application.put(`${this.basePath}/:id`, [authz_handler_1.authorize('user'), this.validateId, this.replace]);
         /**
          * faz o update parcial do documento, se o campo existir
          * no patch altera, se nao, mantem
          *
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.patch(`${this.basePath}/:id`, [this.validateId, this.update]);
+        application.patch(`${this.basePath}/:id`, [authz_handler_1.authorize('user'), this.validateId, this.update]);
         /**
          * chama o callback de validar o ID e se tudo certo chama o metodo
          */
-        application.del(`${this.basePath}/:id`, [this.validateId, this.delete]);
+        application.del(`${this.basePath}/:id`, [authz_handler_1.authorize('user'), this.validateId, this.delete]);
         /**
          * chama o metodo de retorno de restaurantes
          */
@@ -73,6 +74,7 @@ class RestaurantsRouter extends model_router_1.ModelRouter {
          * chama o metodo de atualizar menu
          */
         application.put(`${this.basePath}/:id/menu`, [
+            authz_handler_1.authorize('user'),
             this.validateId,
             this.restaurantService.replaceMenu
         ]);

@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
             validator: validate_cpf_validator_1.validateCPF,
             msg: 'Invalid CPF ({VALUE})'
         }
+    },
+    profiles: {
+        type: [String],
+        required: false
     }
 });
 /**
@@ -49,6 +53,14 @@ userSchema.statics.findByEmail = function (email, projection) {
  */
 userSchema.methods.matches = function (password) {
     return bcrypt.compareSync(password, this.password);
+};
+/**
+ * vira um metodo de instancia com o uso do methods,
+ * nao devemos utilizar arrow functions pelo fato de travar o this
+ * o mongoose deve controlar o this
+ */
+userSchema.methods.hasAny = function (...profiles) {
+    return profiles.some(profile => this.profiles.indexOf(profile) !== -1);
 };
 /**
  *

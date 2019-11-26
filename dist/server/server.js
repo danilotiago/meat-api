@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const token_parser_1 = require("./../security/token.parser");
 const error_handler_1 = require("./error-handler");
 const merge_path_parser_1 = require("./merge-path.parser");
 const environment_1 = require("./../common/environment");
@@ -27,6 +28,8 @@ class Server {
                 this.application.use(restify.plugins.bodyParser());
                 // parse do Body da requisicao via merge-patch+json
                 this.application.use(merge_path_parser_1.mergePatchBodyParser);
+                // middleware de autenticacao
+                this.application.use(token_parser_1.tokenParser);
                 this.application.listen(environment_1.environment.server.port, () => {
                     resolve(this.application);
                 });

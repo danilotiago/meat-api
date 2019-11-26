@@ -7,7 +7,9 @@ export interface User extends mongoose.Document {
     name: string,
     email: string,
     password: string,
-    matches(password: string): boolean
+    profiles: string[],
+    matches(password: string): boolean,
+    hasAny(...profiles: string[]): boolean
 }
 
 export interface UserModel extends mongoose.Model<User> {
@@ -45,6 +47,10 @@ const userSchema = new mongoose.Schema({
             validator: validateCPF,
             msg: 'Invalid CPF ({VALUE})'
         }
+    },
+    profiles: {
+        type: [String],
+        required: false
     }
 });
 
@@ -62,6 +68,15 @@ userSchema.statics.findByEmail = function (email: string, projection: string) {
  */
 userSchema.methods.matches = function(password: string): boolean {
     return bcrypt.compareSync(password, this.password)
+}
+
+/**
+ * vira um metodo de instancia com o uso do methods,
+ * nao devemos utilizar arrow functions pelo fato de travar o this
+ * o mongoose deve controlar o this
+ */
+userSchema.methods.hasAny = function(...profiles: string[]): boolean {
+    return profiles.some(profile => this.profiles.indexOf(profile) !== -1)
 }
 
 /**
