@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@types/jsonwebtoken": "^8.3.5",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
     "jsonwebtoken": "^8.5.1",
